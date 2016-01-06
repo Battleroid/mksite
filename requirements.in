@@ -1,0 +1,6 @@
+jinja2
+hoedown
+python-dateutil
+python-frontmatter
+slugify
+docopt

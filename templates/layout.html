@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>{% if post %}{{ post.title }}{% else %}{{ site.title }}{% endif %}</title>
+</head>
+<body>
+	<h1>{{ site.site_title }}</h1>
+	<span>{{ site.site_author }}, contact at <a href='mailto:{{ site.site_email }}'>{{ site.site_email }}</a></span>
+	{% block body %}
+	{% endblock %}
+</body>
+</html>

@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+
+{% block body %}
+	<h3>Posts</h3>
+	{% if posts %}
+		<ul>
+		{% for post in posts %}
+			<li><a href='{{ post.link }}'>{{ post.title }}</a></li>
+		{% endfor %}
+		</ul>
+	{% endif %}
+{% endblock %}
