@@ -1,3 +1,4 @@
+*.pypirc
 output/
 posts/
 static/
