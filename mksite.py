@@ -116,6 +116,7 @@ class Engine(object):
                     title=fm.get('title', 'Untitled'),
                     slug=slugify(unicode(fm.get('slug') or fm.get('title'))),
                     template=fm.get('template'),
+                    is_standalone=True,
                     content=Markdown(HtmlRenderer()).render(fm.content)
                 )
                 self.standalones.append((p, post, ))
@@ -129,6 +130,7 @@ class Engine(object):
                 title=fm.get('title', 'Untitled'),
                 slug=slugify(unicode(fm.get('slug') or fm.get('title'))),
                 author=fm.get('author', self.site.get('site_author', 'Anonymous')),
+                is_standalone=False,
                 content=Markdown(HtmlRenderer()).render(fm.content)
             )
             if 'date' in fm.keys():
