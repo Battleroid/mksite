@@ -112,7 +112,6 @@ class Engine(object):
             # check if post or standalone
             standalone = bool(fm.get('standalone', False))
             if standalone:
-                print '{} is a standalone page'.format(p)
                 post = dict(
                     title=fm.get('title', 'Untitled'),
                     slug=slugify(unicode(fm.get('slug') or fm.get('title'))),
