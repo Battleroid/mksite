@@ -62,6 +62,12 @@ class Engine(object):
                 for k, v in sect.items():
                     self.cf.set(name, k, v)
             self.cf.write(open(filename, 'w'))
+
+            # create directories
+            dirs = ('posts', 'templates', 'static')
+            for d in dirs:
+                if not os.path.exists(d):
+                    os.mkdir(d)
             sys.exit(0)
         
         # load config
@@ -103,6 +109,20 @@ class Engine(object):
         # process
         for p in queue:
             fm = frontmatter.load(p)
+            # check if post or standalone
+            standalone = bool(fm.get('standalone', False))
+            if standalone:
+                print '{} is a standalone page'.format(p)
+                post = dict(
+                    title=fm.get('title', 'Untitled'),
+                    slug=slugify(unicode(fm.get('slug') or fm.get('title'))),
+                    template=fm.get('template'),
+                    content=Markdown(HtmlRenderer()).render(fm.content)
+                )
+                self.standalones.append((p, post, ))
+                continue
+
+            # is post, fill out meta data
             post = dict(
                 meta=dict(
                     category=fm.get('category', 'none')
@@ -128,6 +148,13 @@ class Engine(object):
             with open(os.path.join(self.defaults['output'], 'posts', post['slug'] + '.html'), 'wb') as f:
                 f.write(html)
 
+    def render_standalones(self):
+        for filename, post in self.standalones:
+            tmpl = self.env.get_template(post['template'])
+            html = tmpl.render(site=self.site, post=post)
+            with open(os.path.join(self.defaults['output'], post['slug'] + '.html'), 'wb') as f:
+                f.write(html)
+
     def prep_output(self):
         try:
             shutil.rmtree(self.defaults['output'])
@@ -146,6 +173,7 @@ class Engine(object):
 
     def generate(self):
         self.posts = []
+        self.standalones = []
         self.env = Environment()
         self.env.loader = FileSystemLoader(self.defaults['templates'])
 
@@ -157,6 +185,7 @@ class Engine(object):
         # render
         self.load_posts()
         self.render_posts()
+        self.render_standalones()
         self.render_index()
         self.copy_static()
 
